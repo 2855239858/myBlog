@@ -1,0 +1,140 @@
+---
+title: 847. Shortest Path Visiting All Nodes
+date: 2021-08-06 14:10:52
+tags:
+---
+
+<!-- # **847. Shortest Path Visiting All Nodes**
+
+##### Description：
+
+You have an undirected, connected graph of n nodes labeled from 0 to n - 1. You are given an array graph where graph[i] is a list of all the nodes connected with node i by an edge.
+
+Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
+
+![](Test/847.png)
+{% asset_img 847.png This is an test image %}
+
+<center>
+<img src="./Test/847.png" width="25%" height="25%" />
+Examples
+</center> -->
+
+
+# **847. Shortest Path Visiting All Nodes**
+
+##### Description：
+
+You have an undirected, connected graph of n nodes labeled from 0 to n - 1. You are given an array graph where graph[i] is a list of all the nodes connected with node i by an edge.
+
+Return the length of the shortest path that visits every node. You may start and stop at any node, you may revisit nodes multiple times, and you may reuse edges.
+
+<img src="./images/847.png" alt="847" style="zoom:67%;" />
+
+###### Method 1: BFS and state compress
+
+BFS: **queue** is used to select nodes by the divergent mode.
+
+Compress: because 1 <= n <= 12, so **uint16_t** or bigger type is enough, each of the bit represent whether the current **node** has been selected. For example, uint16_t **2** which has the binary representation **0000000000000010**, means **node 2** has been selected and others haven't.
+
+```
+int shortestPathLength(vector<vector<int>>& graph) {
+    int size = graph.size();
+    //tuple<a, b, c> a：节点 b：mask c：dist
+    queue<tuple<uint8_t, uint16_t, int>> q;
+    // vector<vector<uint8_t>> visited(size, vector<uint8_t>(1<<size));
+    uint8_t visited[size][1<<size];
+    memset(visited, 0, sizeof(uint8_t) * size * (1<<size));
+
+    for(int i = 0; i < size; ++i) {
+        q.emplace(i, 1<<i, 0);
+        visited[i][1<<i] = 1;
+    }
+    int ans = 0;
+    while(!q.empty()) {
+        auto [u, mask, dist] = q.front();
+        q.pop();
+
+        //是否已经遍历完所有节点
+        //因为采用的是bfs的方法，所以先遍历完的一定是最短路径
+        if(mask == (1 << size) - 1) {
+            ans = dist;
+            break;
+        }
+
+        //遍历临界节点
+        for(int v: graph[u]) {
+            int mask_v = mask | (1 << v);
+            if(visited[v][mask_v] == 0) {
+                q.emplace(v, mask_v, dist + 1);
+                // q.push({v, mask_v, dist + 1});
+                visited[v][mask_v] = 1;
+            }
+        }
+    }
+
+    return ans;
+
+}
+```
+
+##### Method 2: dp and floyd
+
+Floyd: use **floyd** to calculate the shortest distance between every 2 nodes.
+
+DP: ![image-20210806144155287](./Test/image-20210806144155287.png)
+
+```
+class Solution {
+public:
+int shortestPathLength(vector<vector<int>>& graph) {
+    int n = graph.size();
+    // vector<vector<int>> dist(n, vector<int>(n, n + 1));
+    int dist[n][n];
+    memset(dist, 0x3f, sizeof(int) * n * n);
+
+	// Use Floyd
+    for(int i = 0; i < n; ++i) {
+        for(int j: graph[i]) {
+            dist[i][j] = 1;
+        }
+    }
+    for(int k = 0; k < n; ++k) {
+        for(int i = 0; i < n; ++i) {
+            for(int j = 0; j < n; ++j) {
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+            }
+        }
+    }
+	
+	// DP method
+    // vector<vector<int>> f(n, vector<int>(1<<n, INT_MAX / 2));
+    int f[n][1<<n];
+    memset(f, 0x3f, sizeof(int) * n * (1<<n));
+    for(int mask = 1; mask < (1<<n); ++mask) {
+        if((mask & (mask - 1)) == 0) {
+            int u = __builtin_ctz(mask);
+            f[u][mask] = 0;
+        } else {
+            for(int u = 0; u < n; ++u) {
+                if(mask & (1 << u)) {
+                    for(int v = 0; v < n; ++v) {
+                        if(mask & (1 << v) && v != u) {
+                            f[u][mask] = min(f[u][mask], f[v][mask ^ (1<<u)] + dist[v][u]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Select the shorted distance
+    int ans = INT_MAX;
+    for(int i = 0; i < n; ++i) {
+        ans = min(ans, f[i][(1<<n) - 1]);
+    }
+
+    return ans;
+}
+};
+```
