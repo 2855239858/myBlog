@@ -18,7 +18,7 @@ tags:
   - SMALLINT—2 byte integer
   - INT—4 byte integer
   - BIGINT—8 byte integer
-<!--more-->
+  <!--more-->
 - Boolean type
   - BOOLEAN—TRUE/FALSE
 - Floating point numbers
@@ -145,6 +145,27 @@ row format delimited fields terminated by '\t';`
 
 
 `select * from stu_buck tablesample(bucket x out of y on id);`
+
+### 5. Useful Functions
+
+##### (1) NVL: replace for NULL value
+
+- nvl(string1, replace_with): if 'string' is NULL, then return with the value of 'replace_with'
+- `select nvl(comm,-1) from emp;` replace with -1
+- `select nvl(comm,mgr) from emp;` replace with another column value
+
+##### (2) CASE WHEN: conditional expression
+
+- case string1 when val then ret1 else ret2 end: if the value of 'string1' and 'val' match, then return 'ret1', else return 'ret2'.
+
+Example:
+
+`select
+ dept_id,
+ sum(case sex when '男' then 1 else 0 end) male_count,
+ sum(case sex when '女' then 1 else 0 end) female_count
+from emp_sex
+group by dept_id;`
 
 
 
