@@ -17,6 +17,8 @@ tags:
 
 ![image-20220321161607259](https://raw.githubusercontent.com/2855239858/myBlog/8b593413bf68f64198bc4db50da340a78c6f4813/source/_posts/Hadoop%20-%201.%20Introduction.assets/image-20220321161607259.png)
 
+<!--more-->
+
 ### What are the advantages of Hadoop?
 
 1. High reliability: The bottom layer of Hadoop maintains multiple copies of data, so even if a computing element or storage of Hadoop fails, it will not cause data loss

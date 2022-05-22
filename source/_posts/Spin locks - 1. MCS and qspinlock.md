@@ -21,6 +21,7 @@ By **Jonathan Corbet**
 March 11, 2014
 
 Impressive amounts of effort have gone into optimizing the kernel's low-level locking mechanisms over the years, but that does not mean that there is no room for improving their performance further. Some work that will be in the 3.14 3.15 kernel, with more likely to come later, has the potential to speed up kernel locking considerably, especially in situations where there are significant amounts of contention.
+<!--more-->
 
 Conceptually, a spinlock is a simple mechanism. The lock can be as small as a single bit; if that bit is clear, the lock is available. A thread wanting to acquire the lock will attempt to set that bit with an atomic compare-and-swap instruction, "spinning" repeatedly if the lock is not available at the time. Over the years, spinlocks have become more complex; [ticket spinlocks](/Articles/267968/) added fairness to the mechanism in 2008, and 2013 saw the addition of better paravirtualization support, for example.
 
