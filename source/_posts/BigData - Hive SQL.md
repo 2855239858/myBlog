@@ -167,15 +167,55 @@ Example:
 from emp_sex
 group by dept_id;`
 
+##### ([3]()) row to column functions
 
+- **CONCAT(string A/col, string B/col, ...)**: Returns the result of the concatenation of the input strings, supports any number of input strings.
+- **CONCAT_WS(separator, str1, str2, ...)**: Concatenates the strings end-to-end with the separator between them.
+  - Eg: concat_ws(',', 'A', 'B', 'C') => 'A,B,C'
+- **COLLECT_SET(col)**: The function only accepts basic data types, and its main function is to de-aggregate the value of a field to generate an array type field.
+- **COLLECT_LIST(col)**: Similar with collect_set, but will keep the duplicate values.
 
+##### (4) column to tow functions
 
+- **EXPLODE(col)**: Split a complex array or map structure in one column of hive into multiple rows.
+- **LATER VIEW**:
+  - Usage: LATER VIEW udft(expression) tableAlias AS columnAlias
+  - It is used with **UDTFs such as split, explode, etc**. It can split a column of data into multiple rows of data, and on this basis, the split data can be aggregated.
 
+##### (5) Window functions
 
+- **Usage**: ***SELECT <columns_name>, <aggregate>(column_name) OVER (<windowing specification>) FROM <table_name>;***
+  - *column_name* – column name of the table
+  - *Aggregate* – Any aggregate function(s) like COUNT, AVG, MIN, MAX
+  - *Windowing specification* – It includes following:
+    - **PARTITION BY** – Takes a column(s) of the table as a reference.
+    - **ORDER BY** – Specified the Order of column(s) either Ascending or Descending.
+    - **Frame** – Specified the boundary of the frame by stat and end value. The boundary either be a type of RANGE or ROW followed by PRECEDING, FOLLOWING and any value.
+    - These three (PARTITION, ORDER BY, and Window frame) are either be alone or together.
+- **WINDOWING Specification**: In the windowing frame, you can define the subset of rows in which the windowing function will work. You can specify this subset using upper and lower boundary value using windowing specification.
+  - **Syntax**: ***ROW|RANGE BETWEEN <upper expression> AND <lower expression>***
+  - **UPPER EXPRESSION** can have these 3 value:
+    - *UNBOUNDED PRECEDING* – It denotes window will start from the first row of the group/partition.
+    - *CURRENT ROW* – Window will start from the current row.
+    - *<INTEGER VALUE>* PRECEDING – Provide any specific row to start window
+  - **LOWER EXPRESSION**
+    - *UNBOUNDED FOLLOWING* – It means the window will end at the last row of the group/partition.
+    - *CURRENT ROW* – Window will end at the current row
+    - *<INTEGER VALUE> FOLLOWING* – Window will end at specific row
+- **LEAD**: It is an analytics function used to return the data from the next set of rows. By default, the lead is of 1 row and it will return NULL in case it exceeds the current window.
+- **LAG**: It is the opposite of LEAD function, it returns the data from the previous set of data. By default lag is of 1 row and return NULL in case the lag for the current row is exceeded before the beginning of the window.
+- **FIRST_VALUE**: This function returns the value from the first row in the window based on the clause and assigned to all the rows of the same group.
+- **LAST_VALUE**: In reverse of FIRST_VALUE, it return the value from the last row in a window based on the clause and assigned to all the rows of the same group.
 
+For more examples, refer to https://bigdataprogrammers.com/windowing-functions-in-hive/
 
+##### (6) RANK
 
+- RANK(): It will repeat when the order is the same, the total will not change.
+- DENSE_RANK(): Duplicates when the ordering is the same, the total will decrease.
+- ROW_NUMBER(): Will be calculated in order.
 
+![image-20220529223456341](C:\Users\user\Documents\GitHub\myBlog\source\_posts\BigData - Hive SQL.assets\image-20220529223456341.png)
 
 
 
