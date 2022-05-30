@@ -215,7 +215,7 @@ For more examples, refer to https://bigdataprogrammers.com/windowing-functions-i
 - DENSE_RANK(): Duplicates when the ordering is the same, the total will decrease.
 - ROW_NUMBER(): Will be calculated in order.
 
-![image-20220529223456341](C:\Users\user\Documents\GitHub\myBlog\source\_posts\BigData - Hive SQL.assets\image-20220529223456341.png)
+![image-20220529223456341](https://raw.githubusercontent.com/2855239858/myBlog/main/source/_posts/BigData%20-%20Hive%20SQL.assets/image-20220529223456341.png)
 
 
 
